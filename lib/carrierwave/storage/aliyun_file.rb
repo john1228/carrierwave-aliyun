@@ -75,7 +75,7 @@ module CarrierWave
       end
 
       def copy_to(new_path)
-        bucket.copy_object(path, new_path)
+        bucket.copy_object(URI::encode(path), new_path)
         self.class.new(uploader, @base, new_path)
       end
 
