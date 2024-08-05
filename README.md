@@ -2,7 +2,7 @@
 
 This gem adds support for [Aliyun OSS](http://oss.aliyun.com) to [CarrierWave](https://github.com/jnicklas/carrierwave/)
 
-[![Gem Version](https://badge.fury.io/rb/carrierwave-aliyun.svg)](https://rubygems.org/gems/carrierwave-aliyun) [![Build Status](https://travis-ci.org/huacnlee/carrierwave-aliyun.svg?branch=master)](https://travis-ci.org/huacnlee/carrierwave-aliyun) [![Code Climate](https://codeclimate.com/github/huacnlee/carrierwave-aliyun/badges/gpa.svg)](https://codeclimate.com/github/huacnlee/carrierwave-aliyun)
+[![Gem Version](https://badge.fury.io/rb/carrierwave-aliyun.svg)](https://rubygems.org/gems/carrierwave-aliyun) [![build](https://github.com/huacnlee/carrierwave-aliyun/workflows/build/badge.svg)](https://github.com/huacnlee/carrierwave-aliyun/actions?query=workflow%3Abuild)
 
 > NOTE: 此 Gem 是一个 CarrierWave 的组件，你需要配合 CarrierWave 一起使用，如果你需要直接用 Aliyun OSS，可以尝试用 [aliyun-sdk](https://github.com/aliyun/aliyun-oss-ruby-sdk) 这个 Gem。
 
@@ -48,7 +48,7 @@ end
 
 > NOTE: Private Bucket also support this feature!
 
-关于阿里云 OSS 图片缩略图的详细文档，请仔细阅读: [Aliyun OSS 接入图片服务](https://help.aliyun.com/document_detail/44688.html)
+关于阿里云 OSS 图片缩略图的详细文档，请仔细阅读：[Aliyun OSS 接入图片服务](https://help.aliyun.com/document_detail/44688.html)
 
 The details of the Alicoud OSS image thumb service, please visit [Alicloud OSS - Image Processing / Resize images](https://www.alibabacloud.com/help/doc-detail/44688.htm)
 
@@ -80,3 +80,20 @@ class AttachmentUploader < CarrierWave::Uploader::Base
   end
 end
 ```
+
+## 启用全球传输加速
+
+阿里云允许我们通过 `oss-accelerate.aliyuncs.com` 的节点来实现全球的传输加速，如果你的需要在境外的服务器传输到国内，或许需要开启这个功能。
+
+你只需要将 CarrierWave Aliyun 的 `aliyun_region` 配置为 `accelerate` 即可。
+
+```rb
+config.aliyun_region = "accelerate"
+```
+
+### 异常解析
+
+> 错误：OSS Transfer Acceleration is not configured on this bucket.
+> 确保有开启 [传输加速](https://help.aliyun.com/document_detail/131312.html)，进入 Bucket / 传输管理 / 传输加速 / 开启传输加速。
+
+额外注意：Aliyun OSS 开启传输加速后需要 **30 分钟内全网生效**

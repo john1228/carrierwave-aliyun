@@ -2,9 +2,10 @@
 
 source "https://rubygems.org"
 
-gem "rake"
-gem "sqlite3", "~> 1.3.6"
 gem "activerecord"
 gem "mini_magick"
 gem "minitest"
+gem "rack-test"
+gem "rake"
+gem "sqlite3"
 gemspec

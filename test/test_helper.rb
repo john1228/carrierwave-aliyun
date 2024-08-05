@@ -7,11 +7,12 @@ require "carrierwave-aliyun"
 require "carrierwave/processing/mini_magick"
 require "open-uri"
 require "net/http"
+require "rack/test"
 
 module Rails
   class <<self
     def root
-      [File.expand_path(__FILE__).split("/")[0..-3].join("/"), "test"].join("/")
+      Pathname.new([File.expand_path(__FILE__).split("/")[0..-3].join("/"), "test"].join("/"))
     end
   end
 end
@@ -84,7 +85,6 @@ class Attachment < ActiveRecord::Base
   mount_uploader :file, AttachUploader
 end
 
-
 class ActiveSupport::TestCase
   setup do
     ActiveRecord::Schema.define(version: 1) do
@@ -106,11 +106,25 @@ class ActiveSupport::TestCase
     end
   end
 
-  def load_file(fname)
-    File.open([Rails.root, "fixtures", fname].join("/"))
+  def load_file(name)
+    File.open(Rails.root.join("fixtures/#{name}"))
+  end
+
+  def rack_upload_file(name, content_type = "text/plain")
+    Rack::Test::UploadedFile.new(Rails.root.join("fixtures/#{name}"), content_type)
   end
 
   def download_file(url)
     Net::HTTP.get_response(URI.parse(url))
+  end
+
+  def assert_prefix_with(prefix, str)
+    assert str&.start_with?(prefix), "#{str} not start with: #{prefix}"
+  end
+
+  def assert_no_cache_files(uploader)
+    bucket = CarrierWave::Aliyun::Bucket.new(uploader)
+    files = bucket.list_objects(prefix: uploader.cache_path).to_a
+    assert_equal 0, files.length
   end
 end
